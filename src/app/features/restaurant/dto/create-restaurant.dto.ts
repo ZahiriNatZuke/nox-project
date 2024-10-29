@@ -5,7 +5,8 @@ export const CreateRestaurantSchema = z
 	.object({
 		name: z.string().trim().min(1),
 		address: z.string().trim().min(1),
-		capacity: z.coerce.number().positive().int().min(1),
+		maxCapacity: z.coerce.number().positive().int().min(1),
+		onlyAdults: z.boolean().default(false),
 	})
 	.required();
 

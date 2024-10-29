@@ -20,9 +20,9 @@ export class RestaurantService {
 
 	constructor(private readonly prisma: PrismaService) {}
 
-	create({ name, capacity, address }: CreateRestaurantDto) {
+	create({ name, maxCapacity, address, onlyAdults }: CreateRestaurantDto) {
 		return this.prisma.restaurant.create({
-			data: { name, capacity, address },
+			data: { name, maxCapacity, address, onlyAdults },
 		});
 	}
 
