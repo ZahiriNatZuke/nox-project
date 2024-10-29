@@ -40,6 +40,7 @@ model Restaurant {
 model Order {
   id           String     @id @default(uuid())
   description  String
+  capacity     Int
   client       Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
   clientId     String
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
