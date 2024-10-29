@@ -9,6 +9,7 @@ import {
 	loggingMiddleware,
 	providePrismaClientExceptionFilter,
 } from 'nestjs-prisma';
+import { ClientModule } from './app/features/client/client.module';
 
 @Module({
 	imports: [
@@ -39,6 +40,7 @@ import {
 				],
 			},
 		}),
+		ClientModule,
 	],
 	controllers: [AppController],
 	providers: [
