@@ -24,24 +24,30 @@ export class OrderService {
 		});
 
 		if (!restaurant)
-			throw new HttpException('Restaurant not found', HttpStatus.NOT_FOUND);
+			throw new HttpException(
+				{ message: 'Restaurant not found' },
+				HttpStatus.NOT_FOUND
+			);
 
 		const client = await this.prisma.client.findUnique({
 			where: { id: clientId },
 		});
 
 		if (!client)
-			throw new HttpException('Client not found', HttpStatus.NOT_FOUND);
+			throw new HttpException(
+				{ message: 'Client not found' },
+				HttpStatus.NOT_FOUND
+			);
 
 		if (restaurant.capacity + capacity > restaurant.maxCapacity)
 			throw new HttpException(
-				'Restaurant capacity exceeded',
+				{ message: 'Restaurant capacity exceeded' },
 				HttpStatus.BAD_REQUEST
 			);
 
 		if (restaurant.onlyAdults && client.age < 18)
 			throw new HttpException(
-				'Only adults are allowed',
+				{ message: 'Only adults are allowed' },
 				HttpStatus.BAD_REQUEST
 			);
 
@@ -99,7 +105,7 @@ export class OrderService {
 
 		if (order.restaurant.capacity + diff > order.restaurant.maxCapacity)
 			throw new HttpException(
-				'Restaurant capacity exceeded',
+				{ message: 'Restaurant capacity exceeded' },
 				HttpStatus.BAD_REQUEST
 			);
 

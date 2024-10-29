@@ -1,5 +1,11 @@
 import { OrderService } from '@app/features/order/order.service';
-import { Injectable, NotFoundException, PipeTransform } from '@nestjs/common';
+import {
+	HttpException,
+	HttpStatus,
+	Injectable,
+	NotFoundException,
+	PipeTransform,
+} from '@nestjs/common';
 import { z } from 'zod';
 
 @Injectable()
@@ -8,12 +14,19 @@ export class FindOrderByIdPipe implements PipeTransform {
 
 	async transform(id: string) {
 		const result = z.string().uuid('Invalid UUID').safeParse(id);
-		if (!result.success) throw new NotFoundException(result.error.errors);
+		if (!result.success)
+			throw new NotFoundException({
+				message: result.error.message,
+				error: result.error.errors,
+			});
 
 		try {
 			return await this.orderService.findOne({ id }, true);
 		} catch (_) {
-			throw new NotFoundException('Order not found');
+			throw new HttpException(
+				{ message: 'Order not found' },
+				HttpStatus.NOT_FOUND
+			);
 		}
 	}
 }
