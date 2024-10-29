@@ -15,7 +15,6 @@ import {
 	Delete,
 	Get,
 	HttpStatus,
-	Logger,
 	Param,
 	Patch,
 	Post,
@@ -59,20 +58,20 @@ export class ClientController {
 	) {
 		const { take, page, url } = pagination;
 		const OR: Prisma.ClientWhereInput[] = [];
-		Logger.log({ name, email });
 		if (name)
 			OR.push({
 				name: {
 					contains: name,
+					mode: 'insensitive',
 				},
 			});
 		if (email)
 			OR.push({
 				email: {
 					equals: email,
+					mode: 'insensitive',
 				},
 			});
-		Logger.log(OR);
 
 		const entityPagination: ClientPagination = {
 			orderBy: { createdAt: 'asc' },
@@ -82,7 +81,6 @@ export class ClientController {
 				...(OR.length > 0 ? { OR } : {}),
 			},
 		};
-		Logger.log(entityPagination);
 		const [total, clients] =
 			await this.clientService.findMany(entityPagination);
 		return res.status(HttpStatus.OK).send({
