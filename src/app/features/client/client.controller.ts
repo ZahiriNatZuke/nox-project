@@ -8,7 +8,7 @@ import {
 	ClientWithRelations,
 	Pagination,
 } from '@app/core/types';
-import { generateMetadata } from '@app/core/utils/generate-metadata';
+import { generateMetadata } from '@app/core/utils';
 import { ClientService } from '@app/features/client/client.service';
 import {
 	CreateClientZodDto,

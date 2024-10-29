@@ -30,3 +30,6 @@ export type RestaurantWithCount = Prisma.RestaurantGetPayload<{
 export type RestaurantWithRelations = Prisma.RestaurantGetPayload<{
 	include: { _count: true; orders: true };
 }>;
+export type OrderWithRelations = Prisma.OrderGetPayload<{
+	include: { client: true; restaurant: true };
+}>;

@@ -11,6 +11,7 @@ import {
 	loggingMiddleware,
 	providePrismaClientExceptionFilter,
 } from 'nestjs-prisma';
+import { OrderModule } from './app/features/order/order.module';
 
 @Module({
 	imports: [
@@ -43,6 +44,7 @@ import {
 		}),
 		ClientModule,
 		RestaurantModule,
+		OrderModule,
 	],
 	controllers: [AppController],
 	providers: [

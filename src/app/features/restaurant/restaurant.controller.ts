@@ -9,7 +9,7 @@ import {
 	RestaurantPagination,
 	RestaurantWithRelations,
 } from '@app/core/types';
-import { generateMetadata } from '@app/core/utils/generate-metadata';
+import { generateMetadata } from '@app/core/utils';
 import {
 	CreateRestaurantZodDto,
 	UpdateRestaurantZodDto,
