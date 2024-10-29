@@ -24,3 +24,9 @@ export type ClientWithCount = Prisma.ClientGetPayload<{
 export type ClientWithRelations = Prisma.ClientGetPayload<{
 	include: { _count: true; orders: true };
 }>;
+export type RestaurantWithCount = Prisma.RestaurantGetPayload<{
+	include: { _count: true };
+}>;
+export type RestaurantWithRelations = Prisma.RestaurantGetPayload<{
+	include: { _count: true; orders: true };
+}>;

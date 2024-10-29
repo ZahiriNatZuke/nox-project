@@ -2,18 +2,19 @@ import {
 	ApiPaginationDecorator,
 	PaginationDecorator,
 } from '@app/core/decorators';
-import { FindClientByIdPipe, TrimQuerySearchPipe } from '@app/core/pipes';
+import { FindRestaurantByIdPipe, TrimQuerySearchPipe } from '@app/core/pipes';
 import {
-	ClientPagination,
 	ClientWithRelations,
 	Pagination,
+	RestaurantPagination,
+	RestaurantWithRelations,
 } from '@app/core/types';
 import { generateMetadata } from '@app/core/utils/generate-metadata';
-import { ClientService } from '@app/features/client/client.service';
 import {
-	CreateClientZodDto,
-	UpdateClientZodDto,
-} from '@app/features/client/dto';
+	CreateRestaurantZodDto,
+	UpdateRestaurantZodDto,
+} from '@app/features/restaurant/dto';
+import { RestaurantService } from '@app/features/restaurant/restaurant.service';
 import {
 	Body,
 	Controller,
@@ -30,36 +31,36 @@ import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { Response } from 'express';
 
-@Controller('client')
-@ApiTags('Client')
-export class ClientController {
-	constructor(private readonly clientService: ClientService) {}
+@Controller('restaurant')
+@ApiTags('Restaurant')
+export class RestaurantController {
+	constructor(private readonly restaurantService: RestaurantService) {}
 
 	@Post()
 	async create(
 		@Res() res: Response,
-		@Body() createClientDto: CreateClientZodDto
+		@Body() createRestaurantDto: CreateRestaurantZodDto
 	) {
 		return res.status(HttpStatus.CREATED).send({
 			statusCode: HttpStatus.CREATED,
 			status: 'success',
-			message: 'Client created successfully',
-			data: await this.clientService.create(createClientDto),
+			message: 'Restaurant created successfully',
+			data: await this.restaurantService.create(createRestaurantDto),
 		});
 	}
 
 	@Get()
 	@ApiPaginationDecorator()
 	@ApiQuery({ name: 'name', required: false, type: 'string' })
-	@ApiQuery({ name: 'email', required: false, type: 'string' })
+	@ApiQuery({ name: 'address', required: false, type: 'string' })
 	async findAll(
 		@Res() res: Response,
 		@PaginationDecorator() pagination: Pagination,
 		@Query('name', TrimQuerySearchPipe) name?: string,
-		@Query('email', TrimQuerySearchPipe) email?: string
+		@Query('address', TrimQuerySearchPipe) address?: string
 	) {
 		const { take, page, url } = pagination;
-		const OR: Prisma.ClientWhereInput[] = [];
+		const OR: Prisma.RestaurantWhereInput[] = [];
 		if (name)
 			OR.push({
 				name: {
@@ -67,15 +68,15 @@ export class ClientController {
 					mode: 'insensitive',
 				},
 			});
-		if (email)
+		if (address)
 			OR.push({
-				email: {
-					search: email,
+				address: {
+					search: address,
 					mode: 'insensitive',
 				},
 			});
 
-		const entityPagination: ClientPagination = {
+		const entityPagination: RestaurantPagination = {
 			orderBy: { createdAt: 'asc' },
 			take,
 			skip: (page - 1) * take,
@@ -83,15 +84,15 @@ export class ClientController {
 				...(OR.length > 0 ? { OR } : {}),
 			},
 		};
-		const [total, clients] =
-			await this.clientService.findMany(entityPagination);
+		const [total, restaurants] =
+			await this.restaurantService.findMany(entityPagination);
 		return res.status(HttpStatus.OK).send({
 			statusCode: HttpStatus.OK,
 			status: 'success',
-			data: clients,
+			data: restaurants,
 			meta: generateMetadata(
 				{ total, take, page, url },
-				{ query: { name, email } }
+				{ query: { name, address } }
 			),
 		});
 	}
@@ -100,13 +101,13 @@ export class ClientController {
 	@ApiParam({ name: 'id', type: 'string', required: true })
 	findOne(
 		@Res() res: Response,
-		@Param('id', FindClientByIdPipe)
-		client: ClientWithRelations
+		@Param('id', FindRestaurantByIdPipe)
+		restaurant: RestaurantWithRelations
 	) {
 		return res.status(HttpStatus.OK).send({
 			statusCode: HttpStatus.OK,
 			status: 'success',
-			data: client,
+			data: restaurant,
 		});
 	}
 
@@ -114,15 +115,15 @@ export class ClientController {
 	@ApiParam({ name: 'id', type: 'string', required: true })
 	async update(
 		@Res() res: Response,
-		@Param('id', FindClientByIdPipe)
+		@Param('id', FindRestaurantByIdPipe)
 		{ id }: ClientWithRelations,
-		@Body() updateClientDto: UpdateClientZodDto
+		@Body() updateRestaurantDto: UpdateRestaurantZodDto
 	) {
 		return res.status(HttpStatus.OK).send({
 			statusCode: HttpStatus.OK,
 			status: 'success',
-			message: 'Client updated successfully',
-			data: await this.clientService.update({ id }, updateClientDto),
+			message: 'Restaurant updated successfully',
+			data: await this.restaurantService.update({ id }, updateRestaurantDto),
 		});
 	}
 
@@ -130,14 +131,14 @@ export class ClientController {
 	@ApiParam({ name: 'id', type: 'string', required: true })
 	async remove(
 		@Res() res: Response,
-		@Param('id', FindClientByIdPipe)
+		@Param('id', FindRestaurantByIdPipe)
 		{ id }: ClientWithRelations
 	) {
-		await this.clientService.delete({ id });
+		await this.restaurantService.delete({ id });
 		return res.status(HttpStatus.OK).send({
 			statusCode: HttpStatus.OK,
 			status: 'success',
-			message: 'Client deleted successfully',
+			message: 'Restaurant deleted successfully',
 		});
 	}
 }

@@ -1,5 +1,7 @@
 import { AppController } from '@app/app.controller';
 import { env } from '@app/env';
+import { ClientModule } from '@app/features/client/client.module';
+import { RestaurantModule } from '@app/features/restaurant/restaurant.module';
 import { HttpStatus, Logger, Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
@@ -9,7 +11,6 @@ import {
 	loggingMiddleware,
 	providePrismaClientExceptionFilter,
 } from 'nestjs-prisma';
-import { ClientModule } from './app/features/client/client.module';
 
 @Module({
 	imports: [
@@ -41,6 +42,7 @@ import { ClientModule } from './app/features/client/client.module';
 			},
 		}),
 		ClientModule,
+		RestaurantModule,
 	],
 	controllers: [AppController],
 	providers: [
